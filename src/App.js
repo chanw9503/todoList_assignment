@@ -15,6 +15,29 @@ function App() {
 
   const [toDoList, setToDoList] = useState([INITIAL_OBJECT]);
 
+  function onCompleteEvent(id,done){
+    console.log('test');
+      const newList = toDoList.map(item=>{
+        let isDone = false; 
+        item.id === id? isDone = done : isDone = item.done;
+
+        const newToDo = {
+          id : item.id,
+          done : isDone,
+          subject : item.subject,
+          content : item.content,
+        }
+        return newToDo;
+      })
+      console.log(newList);
+      setToDoList(newList);
+  }
+
+  function onDeleteEvent(id){
+    const newList = toDoList.filter((item)=> item.id !== id );
+    setToDoList(newList);
+  }
+
   function AddToDolist(subject,content){
 
 
@@ -34,8 +57,25 @@ function App() {
       <div className="layout">
         <Navigation/>
         <Add_form  addTodoListHandler ={AddToDolist}/>
-       
-        
+        <div className='list_container'>
+         <h2 className="title">Working.. 🔥</h2>
+         { toDoList.filter((item)=> item.done === false)
+            .map((item)=>{ return(<AddWorkingForm 
+            key={item.id} 
+            item ={item}
+            onCompleteHander = {onCompleteEvent}
+            onDleteHandler ={onDeleteEvent}
+            />); })}
+         <h2 className="title">Done..! 🎉</h2>
+
+         { toDoList.filter((item)=> item.done === true)
+            .map((item)=>{ return(<AddDoneForm 
+            key={item.id} 
+            item ={item}
+            onCompleteHander = {onCompleteEvent}
+            onDleteHandler ={onDeleteEvent}
+            />); })}
+        </div>
       </div>
     </div>
   );
@@ -81,5 +121,33 @@ function Add_form({addTodoListHandler}) {
     </form>
   );
 }
+
+
+function AddWorkingForm({item,onCompleteHander,onDleteHandler}){
+    return(
+      <div className='toDoBox' key={item.id}>
+        <div className='subjectBox'><strong>{item.subject}</strong></div>
+        <div className='contentBox'>{item.content}</div>
+        <div className='btnBox'>
+          <button onClick={()=>onDleteHandler(item.id)} className='workingBtn deleteBtn'>삭제하기</button>
+          <button onClick={()=>onCompleteHander(item.id,!item.done)} className='workingBtn CompleteBtn'>완료</button>
+        </div>
+      </div>
+    )
+}
+
+function AddDoneForm({item,onCompleteHander,onDleteHandler}){
+  return(
+    <div className='toDoBox' key={item.id}>
+    <div className='subjectBox'><strong>{item.subject}</strong></div>
+    <div className='contentBox'>{item.content}</div>
+    <div className='btnBox'>
+    <button onClick={()=>onDleteHandler(item.id)} className='workingBtn deleteBtn'>삭제하기</button>
+          <button onClick={()=>onCompleteHander(item.id,!item.done)} className='workingBtn CompleteBtn'>취소</button>
+    </div>
+  </div>
+  )
+}
+
 
 export default App
