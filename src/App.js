@@ -15,11 +15,27 @@ function App() {
 
   const [toDoList, setToDoList] = useState([INITIAL_OBJECT]);
 
+  function AddToDolist(subject,content){
+
+
+    const newToDoList = {
+      id : toDoList.length +1,
+      done : false, 
+      subject,
+      content,
+    }
+
+    setToDoList([...toDoList, newToDoList]);
+    console.log(toDoList);
+  }
+
   return (
     <div className="root">
       <div className="layout">
         <Navigation/>
-        <Add_form/>
+        <Add_form  addTodoListHandler ={AddToDolist}/>
+       
+        
       </div>
     </div>
   );
@@ -35,21 +51,32 @@ function Navigation(){
   )
 }
 
-function Add_form() {
+function Add_form({addTodoListHandler}) {
+
+  const [subject, setSubject] = useState(''); 
+  const [content, setContent] = useState('');
+
+  function AddList(event){
+    event.preventDefault();
+    const add = addTodoListHandler(subject,content);
+    return add;
+  }
+
+
   return (
     <form className="addForm">
       <div className="input_group">
-        <lable className="form-label">
+        <label className="form-label">
           <strong>제목</strong>
-        </lable>
-        <input required type={"text"} className="form-input" id={"subject_input"} />
+        </label>
+        <input onChange={(event)=>setSubject(event.target.value)} required type={"text"} className="form-input" id={"subject_input"} />
         <label className="form-label">
           <strong>내용</strong>
         </label>
-        <input required type={"text"} className="form-input"  id={"content_input"} />
+        <input onChange={(event)=>setContent(event.target.value)} required type={"text"} className="form-input"  id={"content_input"} />
       </div>
       <div>
-        <button className='addBtn'>추가하기</button>
+        <button onClick={(event)=>AddList(event)} className='addBtn'>추가하기</button>
       </div>
     </form>
   );
